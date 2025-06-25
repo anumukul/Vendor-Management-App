@@ -10,10 +10,9 @@ const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 }
 
-
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -23,12 +22,14 @@ export async function GET(
 
     await connectDB()
     
-    if (!ObjectId.isValid(params.id)) {
+    const { id } = await params
+    
+    if (!ObjectId.isValid(id)) {
       return NextResponse.json({ error: 'Invalid vendor ID' }, { status: 400 })
     }
 
     const vendor = await Vendor.findOne({
-      _id: params.id,
+      _id: id,
       createdBy: session.user.email
     }).lean()
 
@@ -48,7 +49,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -58,13 +59,14 @@ export async function PUT(
 
     await connectDB()
     
-    if (!ObjectId.isValid(params.id)) {
+    const { id } = await params
+    
+    if (!ObjectId.isValid(id)) {
       return NextResponse.json({ error: 'Invalid vendor ID' }, { status: 400 })
     }
 
     const data = await request.json()
     
-   
     if (!data.vendorName || !data.bankAccountNo || !data.bankName || !data.addressLine2) {
       return NextResponse.json(
         { error: 'Missing required fields' }, 
@@ -72,9 +74,8 @@ export async function PUT(
       )
     }
 
-   
     const existingVendor = await Vendor.findOne({
-      _id: params.id,
+      _id: id,
       createdBy: session.user.email
     })
 
@@ -82,12 +83,11 @@ export async function PUT(
       return NextResponse.json({ error: 'Vendor not found' }, { status: 404 })
     }
 
-    
     if (data.bankAccountNo !== existingVendor.bankAccountNo) {
       const conflictingVendor = await Vendor.findOne({
         createdBy: session.user.email,
         bankAccountNo: data.bankAccountNo,
-        _id: { $ne: params.id }
+        _id: { $ne: id }
       })
 
       if (conflictingVendor) {
@@ -99,7 +99,7 @@ export async function PUT(
     }
 
     const updatedVendor = await Vendor.findByIdAndUpdate(
-      params.id,
+      id,
       {
         vendorName: data.vendorName.trim(),
         bankAccountNo: data.bankAccountNo.trim(),
@@ -124,10 +124,9 @@ export async function PUT(
   }
 }
 
-
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -137,12 +136,14 @@ export async function DELETE(
 
     await connectDB()
     
-    if (!ObjectId.isValid(params.id)) {
+    const { id } = await params
+    
+    if (!ObjectId.isValid(id)) {
       return NextResponse.json({ error: 'Invalid vendor ID' }, { status: 400 })
     }
 
     const deletedVendor = await Vendor.findOneAndDelete({
-      _id: params.id,
+      _id: id,
       createdBy: session.user.email
     })
 
