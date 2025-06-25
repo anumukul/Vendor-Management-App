@@ -53,14 +53,12 @@ export default function VendorsPage() {
   const [vendorToDelete, setVendorToDelete] = useState<Vendor | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
 
-  // Redirect to login if not authenticated
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
     }
   }, [status, router])
 
-  // Fetch vendors
   const fetchVendors = async (page: number = 1) => {
     setIsLoading(true)
     try {
@@ -72,7 +70,7 @@ export default function VendorsPage() {
       } else {
         toast.error('Failed to fetch vendors')
       }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong while fetching vendors')
     } finally {
       setIsLoading(false)
@@ -85,18 +83,15 @@ export default function VendorsPage() {
     }
   }, [session])
 
-  // Handle page change
   const handlePageChange = (page: number) => {
     fetchVendors(page)
   }
 
-  // Handle delete confirmation
   const handleDeleteClick = (vendor: Vendor) => {
     setVendorToDelete(vendor)
     setDeleteDialogOpen(true)
   }
 
-  // Handle delete vendor
   const handleDeleteConfirm = async () => {
     if (!vendorToDelete) return
 
@@ -108,12 +103,11 @@ export default function VendorsPage() {
 
       if (response.ok) {
         toast.success('Vendor deleted successfully')
-        // Refresh the list
         fetchVendors(pagination.page)
       } else {
         toast.error('Failed to delete vendor')
       }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong while deleting vendor')
     } finally {
       setIsDeleting(false)
@@ -122,12 +116,10 @@ export default function VendorsPage() {
     }
   }
 
-  // Generate pagination buttons
   const generatePaginationButtons = () => {
     const buttons = []
     const { page, totalPages } = pagination
 
-    // Previous button
     if (page > 1) {
       buttons.push(
         <Button
@@ -141,7 +133,6 @@ export default function VendorsPage() {
       )
     }
 
-    // Page numbers
     for (let i = Math.max(1, page - 2); i <= Math.min(totalPages, page + 2); i++) {
       buttons.push(
         <Button
@@ -155,7 +146,6 @@ export default function VendorsPage() {
       )
     }
 
-    // Next button
     if (page < totalPages) {
       buttons.push(
         <Button
@@ -182,12 +172,11 @@ export default function VendorsPage() {
   }
 
   if (!session) {
-    return null // Will redirect to login
+    return null
   }
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold">Vendors</h1>
@@ -201,7 +190,6 @@ export default function VendorsPage() {
         </Button>
       </div>
 
-      {/* Vendors Table */}
       <Card>
         <CardHeader>
           <CardTitle>
@@ -271,7 +259,6 @@ export default function VendorsPage() {
                 </Table>
               </div>
 
-              {/* Pagination */}
               {pagination.totalPages > 1 && (
                 <div className="flex justify-center items-center space-x-2 mt-6">
                   {generatePaginationButtons()}
@@ -282,13 +269,12 @@ export default function VendorsPage() {
         </CardContent>
       </Card>
 
-      {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete vendor "{vendorToDelete?.vendorName}"? 
+              Are you sure you want to delete vendor &quot;{vendorToDelete?.vendorName}&quot;? 
               This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>

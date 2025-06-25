@@ -10,7 +10,6 @@ import { Textarea } from './ui/textarea'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 
-
 interface Vendor {
   _id?: string
   vendorName: string
@@ -95,7 +94,7 @@ export function VendorForm({ vendor, isEdit = false }: VendorFormProps) {
         const error = await response.json()
         toast.error(error.message || `Failed to ${isEdit ? 'update' : 'create'} vendor`)
       }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong. Please try again.')
     } finally {
       setIsLoading(false)
@@ -120,7 +119,6 @@ export function VendorForm({ vendor, isEdit = false }: VendorFormProps) {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Vendor Name */}
               <div className="space-y-2">
                 <Label htmlFor="vendorName" className="text-sm font-medium">
                   Vendor Name <span className="text-red-500">*</span>
@@ -137,7 +135,6 @@ export function VendorForm({ vendor, isEdit = false }: VendorFormProps) {
                 )}
               </div>
 
-             
               <div className="space-y-2">
                 <Label htmlFor="bankAccountNo" className="text-sm font-medium">
                   Bank Account Number <span className="text-red-500">*</span>
@@ -154,7 +151,6 @@ export function VendorForm({ vendor, isEdit = false }: VendorFormProps) {
                 )}
               </div>
 
-              
               <div className="space-y-2">
                 <Label htmlFor="bankName" className="text-sm font-medium">
                   Bank Name <span className="text-red-500">*</span>
@@ -171,7 +167,6 @@ export function VendorForm({ vendor, isEdit = false }: VendorFormProps) {
                 )}
               </div>
 
-              
               <div className="space-y-2">
                 <Label htmlFor="city" className="text-sm font-medium">
                   City
@@ -184,7 +179,6 @@ export function VendorForm({ vendor, isEdit = false }: VendorFormProps) {
                 />
               </div>
 
-             
               <div className="space-y-2">
                 <Label htmlFor="country" className="text-sm font-medium">
                   Country
@@ -197,7 +191,6 @@ export function VendorForm({ vendor, isEdit = false }: VendorFormProps) {
                 />
               </div>
 
-              
               <div className="space-y-2">
                 <Label htmlFor="zipCode" className="text-sm font-medium">
                   Zip Code
@@ -211,7 +204,6 @@ export function VendorForm({ vendor, isEdit = false }: VendorFormProps) {
               </div>
             </div>
 
-            
             <div className="space-y-2">
               <Label htmlFor="addressLine1" className="text-sm font-medium">
                 Address Line 1
@@ -225,7 +217,6 @@ export function VendorForm({ vendor, isEdit = false }: VendorFormProps) {
               />
             </div>
 
-            
             <div className="space-y-2">
               <Label htmlFor="addressLine2" className="text-sm font-medium">
                 Address Line 2 <span className="text-red-500">*</span>
@@ -243,7 +234,6 @@ export function VendorForm({ vendor, isEdit = false }: VendorFormProps) {
               )}
             </div>
 
-            
             <div className="flex flex-col sm:flex-row gap-3 pt-6">
               <Button type="submit" disabled={isLoading} className="sm:w-auto">
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

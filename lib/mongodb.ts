@@ -6,7 +6,12 @@ if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable')
 }
 
-let cached = (global as any).mongoose
+interface GlobalMongoose {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+}
+
+let cached: GlobalMongoose = (global as any).mongoose
 
 if (!cached) {
   cached = (global as any).mongoose = { conn: null, promise: null }

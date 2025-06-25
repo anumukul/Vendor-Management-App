@@ -26,17 +26,6 @@ export default function EditVendorPage() {
   const [vendor, setVendor] = useState<Vendor | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login')
-      return
-    }
-
-    if (session && params.id) {
-      fetchVendor()
-    }
-  }, [status, session, params.id])
-
   const fetchVendor = async () => {
     try {
       const response = await fetch(`/api/vendors/${params.id}`)
@@ -51,13 +40,24 @@ export default function EditVendorPage() {
         toast.error('Failed to fetch vendor details')
         router.push('/vendors')
       }
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong while fetching vendor details')
       router.push('/vendors')
     } finally {
       setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login')
+      return
+    }
+
+    if (session && params.id) {
+      fetchVendor()
+    }
+  }, [status, session, params.id, router])
 
   if (status === 'loading' || isLoading) {
     return (
@@ -69,7 +69,7 @@ export default function EditVendorPage() {
   }
 
   if (!session) {
-    return null // Will redirect to login
+    return null
   }
 
   if (!vendor) {
@@ -77,7 +77,7 @@ export default function EditVendorPage() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <h2 className="text-xl font-semibold text-gray-900">Vendor not found</h2>
-          <p className="text-gray-600 mt-2">The vendor you're looking for doesn't exist.</p>
+          <p className="text-gray-600 mt-2">The vendor you&apos;re looking for doesn&apos;t exist.</p>
         </div>
       </div>
     )

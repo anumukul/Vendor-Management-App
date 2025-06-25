@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-r
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
