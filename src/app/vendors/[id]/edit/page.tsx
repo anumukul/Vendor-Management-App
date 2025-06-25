@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter, useParams } from 'next/navigation'
 import { VendorForm } from '../../../../components/VendorForm'
@@ -26,7 +26,7 @@ export default function EditVendorPage() {
   const [vendor, setVendor] = useState<Vendor | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  const fetchVendor = async () => {
+  const fetchVendor = useCallback(async () => {
     try {
       const response = await fetch(`/api/vendors/${params.id}`)
       
@@ -46,7 +46,7 @@ export default function EditVendorPage() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [params.id, router])
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -57,7 +57,7 @@ export default function EditVendorPage() {
     if (session && params.id) {
       fetchVendor()
     }
-  }, [status, session, params.id, router])
+  }, [status, session, params.id, router, fetchVendor])
 
   if (status === 'loading' || isLoading) {
     return (
