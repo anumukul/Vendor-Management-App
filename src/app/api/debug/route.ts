@@ -1,11 +1,11 @@
 
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { connectDB } from '../../../../lib/mongodb'
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
- 
+   
     const envCheck = {
       MONGODB_URI: !!process.env.MONGODB_URI,
       NEXTAUTH_SECRET: !!process.env.NEXTAUTH_SECRET,
@@ -14,12 +14,12 @@ export async function GET(request: NextRequest) {
       NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     }
 
-   
+ 
     const session = await getServerSession()
     
-
+   
     let dbConnection = false;
-    let dbError = null;
+    let dbError: string | null = null;
     
     try {
       await connectDB()
